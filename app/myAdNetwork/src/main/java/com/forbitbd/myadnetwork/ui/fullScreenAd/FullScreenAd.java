@@ -2,6 +2,7 @@ package com.forbitbd.myadnetwork.ui.fullScreenAd;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
@@ -10,6 +11,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.forbitbd.myadnetwork.R;
@@ -63,8 +67,40 @@ public class FullScreenAd extends DialogFragment {
             imageArr = getArguments().getByteArray(ARG_PARAM1);
 
         }
+
+//        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.darkGrayTransp));
+        //getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        hideStatusBar();
         
-        
+    }
+
+    private void hideStatusBar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            final WindowInsetsController insetsController = getActivity().getWindow().getInsetsController();
+            if (insetsController != null) {
+                insetsController.hide(WindowInsets.Type.statusBars());
+            }
+        } else {
+            getActivity().getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+            );
+        }
+    }
+
+    private void showStatusBar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            final WindowInsetsController insetsController = getActivity().getWindow().getInsetsController();
+            if (insetsController != null) {
+                //insetsController.hide(WindowInsets.Type.statusBars());
+                insetsController.show(WindowInsets.Type.statusBars());
+            }
+        } else {
+            getActivity().getWindow().clearFlags(
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN
+            );
+        }
     }
 
     @Override
@@ -92,6 +128,7 @@ public class FullScreenAd extends DialogFragment {
             @Override
             public void onClick(View v) {
                 dismiss();
+                showStatusBar();
                 if(listener!=null){
                     listener.onCloseAd();
                 }
