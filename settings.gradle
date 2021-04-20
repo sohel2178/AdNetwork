@@ -1,0 +1,3 @@
+include ':app:myAdNetwork'
+include ':app'
+rootProject.name = "AdNetwork"
